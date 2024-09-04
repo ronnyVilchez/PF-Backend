@@ -6,6 +6,7 @@ export class IncidentModel {
         const incdAll = await pool.execute('SELECT * FROM incident')
         return incdAll[0]
     }
+    
     static async incdId(id) {
         const incdAll = await pool.execute('SELECT * FROM incident WHERE id= ?', [id])
         return incdAll[0]
