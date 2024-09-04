@@ -5,12 +5,13 @@ import routerUser from './Routes/user.routes.js'
 import routerIncident from './Routes/incident.routes.js'
 import routerComment from './Routes/comment.routes.js'
 import routerAuth from './Routes/auth.routes.js'
+import { validCors } from './middleware/validCords.js'
 
 const app= express()
 app.use(morgan('dev'))
 app.use(express.json())
 
-
+app.use(validCors)
 app.use('/api/user',routerUser)
 app.use('/api/incident',routerIncident)
 app.use('/api/comment',routerComment)
