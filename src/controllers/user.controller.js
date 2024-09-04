@@ -44,12 +44,14 @@ export const userCreate = async (req, res) => {
 }
 export const userUpdate = async (req, res) => {
     try {
-        const { nombre, apellido, dni, telefono, rol, email,usuario, password } = req.body
-const {id} = req.params
-        if (nombre ||apellido || dni || telefono || rol || email || password || usuario) {
-            const passEncrip = await hash(password, 10)
+        const { nombre, apellido, dni, telefono, rol, email, usuario, password } = req.body
+        const { id } = req.params
+        let passEncrip = 'null'
 
-            const incinew = await UserModel.userUpdt({ nombre, apellido , dni, telefono, rol,usuario, email, passEncrip,id })
+        if (nombre || apellido || dni || telefono || rol || email || password || usuario) {
+           if(password){  passEncrip = await hash(password, 10) }
+
+            const incinew = await UserModel.userUpdt({ nombre, apellido, dni, telefono, rol, usuario, email, passEncrip, id })
             if (incinew.affectedRows === 1) return res.status(200).json({ message: 'Usuario actualizado con exito' })
             if (incinew.affectedRows === 0) return res.status(400).json({ message: 'Error al actualizar el usuario' })
         }
