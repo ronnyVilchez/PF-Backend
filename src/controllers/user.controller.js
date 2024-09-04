@@ -46,7 +46,7 @@ export const userUpdate = async (req, res) => {
     try {
         const { nombre, apellido, dni, telefono, rol, email, usuario, password } = req.body
         const { id } = req.params
-        let passEncrip = 'null'
+        let passEncrip = ''
 
         if (nombre || apellido || dni || telefono || rol || email || password || usuario) {
            if(password){  passEncrip = await hash(password, 10) }
