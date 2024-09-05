@@ -6,7 +6,7 @@ export const validCors =(req,res,next)=>{
     if(frontend.includes(origin) || !origin ) {
         res.setHeader('Access-Control-Allow-Origin',origin ?? '*')
         res.setHeader('Access-Control-Allow-Headers','Content-Type, Authorization')
-        res.setHeader('Access-Control-Allow-Methods','GET, POST, PATCH','DELETE')
+        res.setHeader('Access-Control-Allow-Methods','GET, POST, PATCH , DELETE')
         return next()
     }
     res.status(403).json({message:'Error de CORS. Origen no permitido'})

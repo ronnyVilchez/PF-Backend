@@ -53,29 +53,34 @@ export const incidenUpdate = async (req, res) => {
         const { title, description, ubication, type, status, date } = req.body
         const { id } = req.params
 
-        const files = req.files
-        const arrayImg = await files.map((im) => im.originalname)
-        const imagens = JSON.stringify(arrayImg)
+        let imagens;
+        if (req.files && req.files.length > 0) {
+            const files = req.files
+            const arrayImg = await files.map((im) => im.originalname)
+            imagens = JSON.stringify(arrayImg)
 
-        const incidentImg = await pool.execute('SELECT imagens FROM incident WHERE id = ?', [id]);
-        const totalImages = await JSON.parse(incidentImg[0][0].imagens);
+            const incidentImg = await pool.execute('SELECT imagens FROM incident WHERE id = ?', [id]);
+            const totalImages = await JSON.parse(incidentImg[0][0].imagens);
 
-        const imgDelt = totalImages.filter((img) => !arrayImg.includes(img))
+            const imgDelt = totalImages.filter((img) => !arrayImg.includes(img))
 
-        await Promise.all(imgDelt.map(async (image) => {
-            try {
-                await fs.unlink(`./public/images/${image}`);
-                console.log(`Imagen ${image} eliminada correctamente.`);
-            } catch (err) {
-                if (err.errno === -4058) {
-                    console.error(`No se encuentra la imagen ${image}`);
-                } else {
-                    console.error(`Error al eliminar la imagen ${image}:`, err);
-                    throw err;
+            await Promise.all(imgDelt.map(async (image) => {
+                try {
+                    await fs.unlink(`./public/images/${image}`);
+                    console.log(`Imagen ${image} eliminada correctamente.`);
+                } catch (err) {
+                    if (err.errno === -4058) {
+                        console.error(`No se encuentra la imagen ${image}`);
+                    } else {
+                        console.error(`Error al eliminar la imagen ${image}:`, err);
+                        throw err;
+                    }
                 }
-            }
-        }));
-
+            }));
+        } else {
+            const incidentImg = await pool.execute('SELECT imagens FROM incident WHERE id = ?', [id]);
+            imagens = incidentImg[0][0].imagens
+        }
 
         if (title || description || ubication || type || status || date || id) {
             const incinew = await IncidentModel.incdUpdate({ title, imagens, description, ubication, type, status, date, id })
