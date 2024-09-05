@@ -1,3 +1,4 @@
+import path from "node:path";
 import { pool } from "../config/db.js";
 import { IncidentModel } from "../models/incidentModel.js";
 import fs from 'node:fs/promises'
@@ -76,7 +77,7 @@ export const incidenUpdate = async (req, res) => {
         }));
 
 
-        if ( title || description || ubication || type || status || date || id) {
+        if (title || description || ubication || type || status || date || id) {
             const incinew = await IncidentModel.incdUpdate({ title, imagens, description, ubication, type, status, date, id })
             if (incinew.affectedRows === 1) return res.status(200).json({ message: 'Incidente actualizado con exito' })
             if (incinew.affectedRows === 0) return res.status(400).json({ message: 'Error al actualizar el incidente' })
@@ -96,6 +97,21 @@ export const incidentFromUs = async (req, res) => {
         if (incfrUs.length === 0) return res.status(400).json({ message: 'No hay incidentes para este usuario' })
         res.status(200).json(incfrUs);
     } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+
+}
+export const getImg = async (req, res) => {
+    try {
+        const { name } = req.params
+        const ruta = path.resolve(`./public/images/${name}`)
+        await fs.access(ruta)
+
+        res.sendFile(ruta)
+
+    } catch (error) {
+        if (error.errno === -4058) { return res.status(404).json({ message: 'La foto no se pudo encontrar' }) }
+
         res.status(500).json({ message: error.message })
     }
 
