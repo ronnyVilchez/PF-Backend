@@ -1,5 +1,5 @@
 export const validCors =(req,res,next)=>{
-    const frontend = ['http://localhost:5173','http://localhost:3000']
+    const frontend = ['http://localhost:5173','http://localhost:3000','https://pf-frontend-nine.vercel.app']
     const {origin} = req.headers
    
 
